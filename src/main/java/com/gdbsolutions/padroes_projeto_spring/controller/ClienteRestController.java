@@ -1,7 +1,9 @@
 package com.gdbsolutions.padroes_projeto_spring.controller;
 
 import com.gdbsolutions.padroes_projeto_spring.model.Cliente;
+import com.gdbsolutions.padroes_projeto_spring.model.ClienteRequestDto;
 import com.gdbsolutions.padroes_projeto_spring.service.ClienteService;
+import com.gdbsolutions.padroes_projeto_spring.util.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,7 +35,7 @@ public class ClienteRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cliente> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<Cliente> buscarPorId(@PathVariable String id) {
         return ResponseEntity.ok(clienteService.buscarPorId(id));
     }
 
@@ -43,14 +45,32 @@ public class ClienteRestController {
         return ResponseEntity.ok(cliente);
     }
 
+    @PostMapping("/criar")
+    public ResponseEntity<Cliente> criarCliente(@RequestBody ClienteRequestDto clienteRequest) {
+        // Validate input
+        if (!ValidationUtil.isValidCpf(clienteRequest.getCpfNumber())) {
+            throw new IllegalArgumentException("CPF deve conter 11 dígitos");
+        }
+        if (!ValidationUtil.isValidCep(clienteRequest.getCep())) {
+            throw new IllegalArgumentException("CEP deve conter 8 dígitos");
+        }
+        
+        // Clean the input data
+        clienteRequest.setCpfNumber(ValidationUtil.cleanCpf(clienteRequest.getCpfNumber()));
+        clienteRequest.setCep(ValidationUtil.cleanCep(clienteRequest.getCep()));
+        
+        Cliente cliente = clienteService.criarClienteComDados(clienteRequest);
+        return ResponseEntity.ok(cliente);
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<Cliente> atualizar(@PathVariable Long id, @RequestBody Cliente cliente) {
+    public ResponseEntity<Cliente> atualizar(@PathVariable String id, @RequestBody Cliente cliente) {
         clienteService.atualizar(id, cliente);
         return ResponseEntity.ok(cliente);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+    public ResponseEntity<Void> deletar(@PathVariable String id) {
         clienteService.deletar(id);
         return ResponseEntity.ok().build();
     }
