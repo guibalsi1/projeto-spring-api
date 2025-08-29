@@ -1,6 +1,7 @@
 package com.gdbsolutions.padroes_projeto_spring.controller;
 
 import com.gdbsolutions.padroes_projeto_spring.model.Cliente;
+import com.gdbsolutions.padroes_projeto_spring.model.ClienteRequestDto;
 import com.gdbsolutions.padroes_projeto_spring.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class ClienteRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cliente> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<Cliente> buscarPorId(@PathVariable String id) {
         return ResponseEntity.ok(clienteService.buscarPorId(id));
     }
 
@@ -43,14 +44,20 @@ public class ClienteRestController {
         return ResponseEntity.ok(cliente);
     }
 
+    @PostMapping("/criar")
+    public ResponseEntity<Cliente> criarCliente(@RequestBody ClienteRequestDto clienteRequest) {
+        Cliente cliente = clienteService.criarClienteComDados(clienteRequest);
+        return ResponseEntity.ok(cliente);
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<Cliente> atualizar(@PathVariable Long id, @RequestBody Cliente cliente) {
+    public ResponseEntity<Cliente> atualizar(@PathVariable String id, @RequestBody Cliente cliente) {
         clienteService.atualizar(id, cliente);
         return ResponseEntity.ok(cliente);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+    public ResponseEntity<Void> deletar(@PathVariable String id) {
         clienteService.deletar(id);
         return ResponseEntity.ok().build();
     }

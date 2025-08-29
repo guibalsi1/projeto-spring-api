@@ -1,6 +1,7 @@
 package com.gdbsolutions.padroes_projeto_spring.service;
 
 import com.gdbsolutions.padroes_projeto_spring.model.Cliente;
+import com.gdbsolutions.padroes_projeto_spring.model.ClienteRequestDto;
 
 /**
  * Interface que define o padrão <b>Strategy</b> no domínio de cliente. Com
@@ -13,12 +14,14 @@ public interface ClienteService {
 
     Iterable<Cliente> buscarTodos();
 
-    Cliente buscarPorId(Long id);
+    Cliente buscarPorId(String id);
 
     void inserir(Cliente cliente);
 
-    void atualizar(Long id, Cliente cliente);
+    void atualizar(String id, Cliente cliente);
 
-    void deletar(Long id);
+    void deletar(String id);
+
+    Cliente criarClienteComDados(ClienteRequestDto clienteRequest);
 
 }
